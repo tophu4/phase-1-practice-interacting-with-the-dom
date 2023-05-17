@@ -18,6 +18,12 @@ function init() {
     const minusBtn = document.querySelector("#minus");
     const heartBtn = document.querySelector("#heart");
     const pauseBtn = document.querySelector("#pause");
+    const restartBtn = document.querySelector("#restart");
+
+    //get comment form and input
+    const commentForm = document.querySelector('#comment-form');
+    const commentInput = document.querySelector('#comment-input');
+    const commentList = document.querySelector('#list');
 
     function handleClick(event) {
         const buttonId = event.target.id;
@@ -31,7 +37,6 @@ function init() {
                 console.log("minusBtn")
                 break;
             case "heart":
-                const likesList = document.querySelector("#list");
                 const likedNum = document.querySelector(`li[data-num="${count}"]`);
                 if (likedNum) {
                     const likesCount = parseInt(likedNum.getAttribute("data-likes"));
@@ -52,7 +57,7 @@ function init() {
         
                     // disable buttons except pauseBtn
                     buttons.forEach(function(btn) {
-                        if(btn !== pauseBtn){
+                        if(btn !== pauseBtn && btn !== restartBtn){
                             btn.disabled = true;
                         }
                     });
@@ -71,14 +76,38 @@ function init() {
                     });
                 }
                 break;
+            case "restart":
+                count = 0;
+                domCounter.innerText = count;
+                pauseBtn.innerHTML = "pause"
+
+                clearInterval(intervalId);
+                intervalId = setInterval(function() {
+                    domCounter.innerText = count++;
+                }, 1000);
+                buttons.forEach(function(btn) {
+                    btn.disabled = false;
+                });
+                break;
             default:
                 console.log("btn click")
                 break;
         }
     }
-    
+
     plusBtn.addEventListener("click", handleClick);
     minusBtn.addEventListener("click", handleClick);
     heartBtn.addEventListener("click", handleClick);
     pauseBtn.addEventListener("click", handleClick);
+    restartBtn.addEventListener("click",handleClick);
+
+    commentForm.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+
+        const newComment = document.createElement('div');
+        
+        newComment.innerText = commentInput.value;
+        commentList.appendChild(newComment);
+        commentInput.value = '';
+    });
 }
